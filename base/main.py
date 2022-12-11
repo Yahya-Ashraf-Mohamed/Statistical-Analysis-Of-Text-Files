@@ -1,36 +1,106 @@
 import Functions
 from tkinter import *
+from PIL import ImageTk, Image
 
 """import PySimpleGUI as GUI
 import os.path"""
+
 
 def GetInputFile():
     # Browse for input file then print its name in the text box
     Output_Label = Label(root, text=input_TextBox.get())
     Output_Label.grid(row=2, column=0)
 
+
+def AnalyseInputFile():
+    print("")
+
+
+def Execute(New_Plot_Type):
+    myLable = Label(root, text=New_Plot_Type)
+    myLable.pack()
+
+
 if __name__ == "__main__":
-
     root = Tk()
+    root.title("Statistical Analysis Of Text Files")
+    root.iconbitmap('D:/Self Development/Zewail collage material/Academic years/Year 3/Probability/Project/Icone.ico')
 
-    # Create a Label widget
-    input_TextBox = Entry(root, width=50, borderwidth=5, bg="White", fg="Black")
+# Frame 1
+    Frame_1 = LabelFrame(root, padx=20, pady=5)
+
+    # Create a Textbox widget
+    input_TextBox = Entry(Frame_1, width=50, borderwidth=5, bg="White", fg="Black")
     input_TextBox.insert(0, "Choose the file you want to analysis")
-    #Output_Label = Label(root, text="Label box will be here!")
 
     # Create Buttons
-    button_Choose_File = Button(root, text="Browse File", state=ACTIVE, padx=15, pady=2, fg="blue", command=GetInputFile)
-    button_Exit = Button(root, text="Exit Program", state=ACTIVE, padx=5, pady=2, command=root.quit)
-    button_PMF = Button(root, text="PMF", state=DISABLED, padx=10, pady=5, fg="Green")
-    button_CDF = Button(root, text="CDF", state=DISABLED, padx=10, pady=5, fg="#AA336A")  # dark pink
-    button_Mean = Button(root, text="Mean", state=DISABLED, padx=10, pady=5, fg="orange")
-    button_Variance = Button(root, text="Variance", state=DISABLED, padx=10, pady=5, fg="#8B8000")  # dark yellow
-    button_Skewness = Button(root, text="Skewness", state=DISABLED, padx=10, pady=5, fg="purple")
-    button_kurtosis = Button(root, text="kurtosis", state=DISABLED, padx=10, pady=5, fg="Black")
+    button_Choose_File = Button(Frame_1, text="Browse File", state=ACTIVE, padx=15, pady=2, fg="blue",
+                                command=GetInputFile)
+    button_Analysis_File = Button(Frame_1, text="Analyse", state=ACTIVE, padx=15, pady=2, bg="Green",
+                                  command=AnalyseInputFile)
+
+# Shoving Frame 1 into the screen
+    Frame_1.pack(padx=0, pady=0)
+    input_TextBox.grid(row=0, column=0)
+    button_Choose_File.grid(row=0, column=4)
+    button_Analysis_File.grid(row=1, column=0)
+
+# Frame 2
+    Frame_2 = LabelFrame(root, padx=10, pady=50)
+
+    # Create Radio buttons
+    MODES = [
+        ("PMF", "PMF"),
+        ("CDF", "CDF"),
+        ("Mean", "Mean"),
+        ("Variance", "Variance"),
+        ("skewness", "skewness"),
+        ("kurtosis", "kurtosis"),
+    ]
+
+    PlotType = StringVar()
+    PlotType.set("PMF")
+
+    row = column = count = 0
+    for text, mode in MODES:
+        Radiobutton(Frame_2, text=text, variable=PlotType, value=mode).pack(anchor=W)  # .grid(row=row, column=column)
+        if row == 2:
+            row = 0
+        if count == 2:
+            column = 2
+        else:
+            count = count + 1
+        row = row + 1
+
+    # Create Exit buttons
+    button_Execute = Button(Frame_2, text="Execute", state=ACTIVE, padx=5, pady=2, bg="Red", command=Execute(PlotType.get()))
+
+# Shoving Frame 2 into the screen
+    Frame_2.pack(padx=1, pady=0)
+
+    button_Execute.pack(anchor=W)    # .grid(row=4, column=1)
+
+    # Generate main loop
+    root.mainloop()
+
+"""    # Frame 2
+    Frame_2 = LabelFrame(root, padx=10, pady=10)
+    Frame_2.pack(padx=20, pady=20)
+    button_Exit = Button(Frame_2, text="Exit Program", state=ACTIVE, padx=5, pady=2, bg="Red", command=root.quit)
+
+    # Frame 2
+    Frame_3 = LabelFrame(root, padx=50, pady=50)
+    Frame_3.pack(padx=30, pady=30)
+    button_PMF = Button(Frame_3, text="PMF", state=DISABLED, padx=10, pady=5, fg="Green")
+    button_CDF = Button(Frame_3, text="CDF", state=DISABLED, padx=10, pady=5, fg="#AA336A")  # dark pink
+    button_Mean = Button(Frame_3, text="Mean", state=DISABLED, padx=10, pady=5, fg="orange")
+    button_Variance = Button(Frame_3, text="Variance", state=DISABLED, padx=10, pady=5, fg="#8B8000")  # dark yellow
+    button_Skewness = Button(Frame_3, text="Skewness", state=DISABLED, padx=10, pady=5, fg="purple")
+    button_kurtosis = Button(Frame_3, text="kurtosis", state=DISABLED, padx=10, pady=5, fg="Black")
 
     # Shoving it into the screen
     input_TextBox.grid(row=0, column=0)
-    #Output_Label.grid(row=2, column=0)
+    # Output_Label.grid(row=2, column=0)
 
     C = 20
     for i in range(1, C):
@@ -56,9 +126,7 @@ if __name__ == "__main__":
 
     button_kurtosis.grid(row=28, column=6)
     Label(root, text=" ").grid(row=29, column=6)
-
-    # Generate main loop
-    root.mainloop()
+"""
 
 """
     file_Data_Column = \

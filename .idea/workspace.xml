@@ -2,14 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="43525c03-a887-4740-af88-d9c38c6344f5" name="Changes" comment="v1.2">
-      <change afterPath="$PROJECT_DIR$/Statistical-Analysis-Of-Text-Files-main/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Statistical-Analysis-Of-Text-Files-main/.idea/Project.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Statistical-Analysis-Of-Text-Files-main/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Statistical-Analysis-Of-Text-Files-main/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Statistical-Analysis-Of-Text-Files-main/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Statistical-Analysis-Of-Text-Files-main/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Statistical-Analysis-Of-Text-Files-main/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Project.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Project.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/base/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/base/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,14 +32,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "D:/Self Development/Zewail collage material/Academic years/Year 3/Probability/Project/Statistical-Analysis-Of-Text-Files-main",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Self Development/Zewail collage material/Academic years/Year 3/Probability/Project/Statistical-Analysis-Of-Text-Files-main&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Python.main (1)">
     <configuration name="main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Project" />
@@ -130,5 +124,16 @@
     <MESSAGE value="v1.2" />
     <MESSAGE value="v1.1" />
     <option name="LAST_COMMIT_MESSAGE" value="v1.1" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/base/main.py</url>
+          <line>18</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
