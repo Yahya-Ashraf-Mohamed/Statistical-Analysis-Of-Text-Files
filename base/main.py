@@ -18,13 +18,13 @@ def AnalyseInputFile():
 
 def Execute(New_Plot_Type):
     myLable = Label(root, text=New_Plot_Type)
-    myLable.pack()
+    myLable.grid(row=0, column=0)
 
 
 if __name__ == "__main__":
     root = Tk()
     root.title("Statistical Analysis Of Text Files")
-    root.iconbitmap('D:/Self Development/Zewail collage material/Academic years/Year 3/Probability/Project/Icone.ico')
+    root.iconbitmap('D:/Self Development/Zewail collage material/Academic years/Year 3/Probability/Project/base/Icone.ico')
 
 # Frame 1
     Frame_1 = LabelFrame(root, padx=20, pady=5)
@@ -40,45 +40,74 @@ if __name__ == "__main__":
                                   command=AnalyseInputFile)
 
 # Shoving Frame 1 into the screen
-    Frame_1.pack(padx=0, pady=0)
+    Frame_1.grid(row=0, column=0)    # pack(padx=0, pady=0)
     input_TextBox.grid(row=0, column=0)
     button_Choose_File.grid(row=0, column=4)
     button_Analysis_File.grid(row=1, column=0)
 
+# Frame 3
+    Frame_3 = LabelFrame(root, padx=0, pady=0)
+
+    # Create a Textbox widget
+    Show_TextBox = Text(Frame_3, width=55, borderwidth=2, bg="White", fg="Black")
+
+# Shoving Frame 3 into the screen
+    Frame_3.grid(row=1, column=0)       # .pack(padx=1, pady=1)
+    Show_TextBox.grid(row=0, column=0)      # .pack(pady=0, padx=0)
+
+
 # Frame 2
-    Frame_2 = LabelFrame(root, padx=10, pady=50)
+    Frame_2 = LabelFrame(root, padx=0, pady=0)
 
     # Create Radio buttons
     MODES = [
         ("PMF", "PMF"),
         ("CDF", "CDF"),
         ("Mean", "Mean"),
+        ("Analysis", "Analysis"),
         ("Variance", "Variance"),
         ("skewness", "skewness"),
         ("kurtosis", "kurtosis"),
     ]
 
     PlotType = StringVar()
-    PlotType.set("PMF")
+    # PlotType.set("PMF")
 
     row = column = count = 0
     for text, mode in MODES:
-        Radiobutton(Frame_2, text=text, variable=PlotType, value=mode).pack(anchor=W)  # .grid(row=row, column=column)
-        if row == 2:
+        Radiobutton(Frame_2, text=text, variable=PlotType, value=mode).grid(row=row, column=column)  # .pack(anchor=W)
+        if row == 1 & column == 1:
             row = 0
-        if count == 2:
             column = 2
-        else:
-            count = count + 1
+            continue
         row = row + 1
+        if row == 3:
+            row = 1
+            column = 1
 
     # Create Exit buttons
     button_Execute = Button(Frame_2, text="Execute", state=ACTIVE, padx=5, pady=2, bg="Red", command=Execute(PlotType.get()))
 
 # Shoving Frame 2 into the screen
-    Frame_2.pack(padx=1, pady=0)
+    Frame_2.grid(row=0, column=1)   # .pack(padx=0, pady=0)
 
-    button_Execute.pack(anchor=W)    # .grid(row=4, column=1)
+    button_Execute.grid(row=4, column=1)    # .pack(anchor=W)
+
+# Frame 4
+    Frame_4 = LabelFrame(root, padx=0, pady=0)
+
+    # Create a Textbox widget
+    output_TextBox = Text(Frame_4, width=25, borderwidth=2, bg="White", fg="Black")
+
+# Shoving Frame 4 into the screen
+    Frame_4.grid(row=1, column=1)  # .pack(padx=1, pady=1)
+    output_TextBox.grid(row=0, column=0)  # .pack(pady=0, padx=0)
+
+    # Before and after inserting, change the state, otherwise it won't update
+    # output_TextBox.configure(state='normal')
+    # output_TextBox.insert('end', 'Some Text')
+
+    output_TextBox.configure(state='disabled')
 
     # Generate main loop
     root.mainloop()

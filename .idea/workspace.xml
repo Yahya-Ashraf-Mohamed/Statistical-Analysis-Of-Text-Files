@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="43525c03-a887-4740-af88-d9c38c6344f5" name="Changes" comment="v1.2">
+    <list default="true" id="43525c03-a887-4740-af88-d9c38c6344f5" name="Changes" comment="v1.3">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Icone.ico" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/base/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/base/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -106,7 +107,14 @@
       <option name="project" value="LOCAL" />
       <updated>1670721672548</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="v1.3">
+      <created>1670769475828</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1670769475828</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -123,17 +131,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="v1.2" />
     <MESSAGE value="v1.1" />
-    <option name="LAST_COMMIT_MESSAGE" value="v1.1" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/base/main.py</url>
-          <line>18</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="v1.3" />
+    <option name="LAST_COMMIT_MESSAGE" value="v1.3" />
   </component>
 </project>
