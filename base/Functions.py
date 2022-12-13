@@ -1,6 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+Sample_Space = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                'a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F',
+                'g', 'G', 'h', 'H', 'i', 'I', 'j', 'J', 'k', 'K', 'l', 'L',
+                'm', 'M', 'n', 'N', 'o', 'O', 'p', 'P', 'q', 'Q', 'r', 'R',
+                's', 'S', 't', 'T', 'u', 'U', 'v', 'V', 'w', 'W', 'x', 'X',
+                'y', 'Y', 'z', 'Z']
 
 def OpenFile(FileName):
     try:
@@ -21,43 +27,52 @@ def EditFile(FileName, Updated_text):
     except:
         return False
 
+def Generate_Analysis_File(CheckBox_state, SortedCharList, CharactersDic):
+    Generated_text = "#Character | No. of Repetition | Probability of Occurrence\n"
+    if CheckBox_state == 0:
+        for value, key in SortedCharList[1:NoMostReperted]:
+            Generated_text = Generated_text + "    [" + str(key) + "]    |" + "        " + str(value) + "        " + \
+                             "| " + str((value/CharactersDic["Total no. of words"])) + "\n"
+    else:
+        for value, key in SortedCharList[1:]:
+            Generated_text = Generated_text + "    [" + str(key) + "]    |" + "        " + str(value) + "        " + \
+                             "| " + str((value / CharactersDic["Total no. of words"])) + "\n"
+    return Generated_text
+def Save_Output_File(FileName, Updated_text):
+    try:
+        FileHandel = open(FileName, 'w')
+        FileHandel.write(Updated_text)
+        FileHandel.close()
+        return True
+    except:
+        return False
 
 def CreateDictionary():
     Characters = dict()
-    text = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
-            'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-            'w', 'x', 'y', 'z',
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
-            'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
-            'W', 'X', 'Y', 'Z',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-    for char in text:
+    for char in Sample_Space:
         Characters[char] = Characters.get(char, 0)
     return Characters
 
 
 def Create_CharacterConverter_Dictionary():
     CharacterConverter = dict()
-    text = ['a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F',
-            'g', 'G', 'h', 'H', 'i', 'I', 'j', 'J', 'k', 'K', 'L', 'l',
-            'm', 'M', 'n', 'N', 'o', 'O', 'p', 'P', 'q', 'Q', 'r', 'R',
-            's', 'S', 't', 'T', 'u', 'U', 'v', 'V', 'w', 'W', 'x', 'X',
-            'y', 'Y', 'z', 'Z']
     i = 0
-    for char in text:
-        CharacterConverter[char] = CharacterConverter.get(char, 10) + i
+    for char in Sample_Space:
+        CharacterConverter[char] = CharacterConverter.get(char, 0) + i
         i = i + 1
     return CharacterConverter
 
 
-def Count(FileHandel, CharactersDic):
+def Count_Each_Char(FileHandel, CharactersDic):
     words = FileHandel.split()
+    TotalNumberOfWords = 0
+    CharactersDic["Total no. of words"] = TotalNumberOfWords
     for word in words:
         for char in word:
             CharactersDic[char] = CharactersDic.get(char, 0) + 1
+            TotalNumberOfWords = TotalNumberOfWords + 1
+    CharactersDic["Total no. of words"] = TotalNumberOfWords
     return CharactersDic
-    '''For debugging purpose'''
-
 
 def SortRepetedChar(CharactersDic):
     lst = list()
@@ -71,26 +86,32 @@ def SortRepetedChar(CharactersDic):
 
 
 
-def PlotMostRepetedChar(NoMostReperted, SortedCharList):
-    for value, key in SortedCharList[:NoMostReperted]:
-        plt.bar(key, value)
-    plt.xlabel("Charcters")
-    plt.ylabel("No. Repeted")
+def PlotMostRepetedChar(NoMostReperted, SortedCharList, TotalNumberOfWords):
+    for value, key in SortedCharList[1:NoMostReperted]:
+        plt.bar(key, value/TotalNumberOfWords)
+    plt.xlabel("Characters")
+    plt.ylabel("Probability")
     plt.show()
 
 
-def PlotAllChar(SortedCharList):
-    for value, key in SortedCharList:
-        plt.bar(key, value)
-    plt.xlabel("Charcters")
-    plt.ylabel("No. Repeted")
+def PlotAllChar(SortedCharList, TotalNumberOfWords):
+    for value, key in SortedCharList[1:]:
+        plt.bar(key, value/TotalNumberOfWords)
+    plt.xlabel("Characters")
+    plt.ylabel("No. Repeated")
     plt.show()
 
 
-def ConvertCharToNum(CharactersDic, CharacterConverter):
-    data = []
-    for value, key in CharactersDic:
-        print(value, key)
-        if (key in CharacterConverter):
-            data.append((value * CharacterConverter[key]))
+def Generate_X_fx(CharactersDic, CharacterConverter):
+    data = dict()
+    for key, value in CharacterConverter.items():
+        temp = int(CharactersDic[key])/int(CharactersDic['Total no. of words'])
+        data[value] = data.get(value, temp)
     return data
+
+
+def Calculate_Mean(X_fx):
+    Mean = 0
+    for key, value in X_fx.items():
+        Mean = Mean + (value*key)
+    return Mean
