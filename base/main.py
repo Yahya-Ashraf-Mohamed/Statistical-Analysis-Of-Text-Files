@@ -1,49 +1,104 @@
 import Functions
 from tkinter import *
+from tkinter import filedialog
+from tkinter import messagebox
 from PIL import ImageTk, Image
 
-"""import PySimpleGUI as GUI
-import os.path"""
 
+def Click_Show_TextBox(key):
+     # Open analysis button
+     button_Analyse_File.configure(state=ACTIVE, bg="Green")
 
+# Browse for input file then print its name in the text box
 def GetInputFile():
-    # Browse for input file then print its name in the text box
-    Output_Label = Label(root, text=input_TextBox.get())
-    Output_Label.grid(row=2, column=0)
+    global FileName
+    FileName = filedialog.askopenfilename(initialdir="Home", title="Open Text File",
+                                          filetypes=(("Text Files", "*.txt"),))
+    Text = Functions.OpenFile(FileName)
+    if Text:
+        Show_TextBox.delete(1.0, END)
+        Show_TextBox.insert(END, Text)
+        button_Analyse_File.configure(state=ACTIVE, bg="Green")
+        button_Save_Edit_File.configure(state=ACTIVE)
+        button_Execute.configure(state=ACTIVE, bg="Red")
+        PlotType.set("Analysis")
+    else:
+        messagebox.showerror("ERROR", "Can't open file!\n")
+
+
+def Save_Changes_inputFile():
+    Updated_text = Show_TextBox.get(1.0, END)
+    state = Functions.EditFile(FileName, Updated_text)
+    if state == True:
+        messagebox.showinfo("Save", "File Saved Successfully!")
+    else:
+        messagebox.showerror("ERROR", "Error in Saving!\n" + FileName)
+
+
+def Save_Analysis_File():
+    Updated_text = Show_TextBox.get(1.0, END)
+    Functions.EditFile(FileName, Updated_text)
 
 
 def AnalyseInputFile():
-    print("")
+    "1) Create Dictionary"
+    CharactersDic = Functions.CreateDictionary()
+    CharacterConverter = Functions.Create_CharacterConverter_Dictionary()
+
+    "2) Count Characters"
+    test = Functions.Count(Show_TextBox.get(1.0, END), CharactersDic)
+
+    "3) User Enter Number of letters most repeted"
+    try:
+        NoMostReperted = int(Input_TextBox.get())
+    except:
+        messagebox.showerror("ERROR", "Enter number of letters you want!\n")
+    SortedCharList = Functions.SortRepetedChar(CharactersDic)
+    text = ""
+    counter = 1
+    for value, key in SortedCharList[:NoMostReperted]:
+        text = text + " [" + str(key) + "] " + str(value) + "   "
+        if counter == 4:
+            text = text + "\n"
+            counter = 0
+        counter = counter + 1
+    Analysis_Label.configure(text=text)
 
 
-def Execute(New_Plot_Type):
-    myLable = Label(root, text=New_Plot_Type)
-    myLable.grid(row=0, column=0)
+
+def Execute():
+    button_Save_Analysis_File.configure(state=ACTIVE)
 
 
 if __name__ == "__main__":
     root = Tk()
+    root.geometry("700x550")
     root.title("Statistical Analysis Of Text Files")
-    root.iconbitmap('D:/Self Development/Zewail collage material/Academic years/Year 3/Probability/Project/base/Icone.ico')
+    root.iconbitmap(
+        'D:/Self Development/Zewail collage material/Academic years/Year 3/Probability/Project/base/Icone.ico')
 
 # Frame 1
-    Frame_1 = LabelFrame(root, padx=20, pady=5)
+    Frame_1 = LabelFrame(root, padx=10, pady=22)
 
     # Create a Textbox widget
-    input_TextBox = Entry(Frame_1, width=50, borderwidth=5, bg="White", fg="Black")
-    input_TextBox.insert(0, "Choose the file you want to analysis")
+    Input_TextBox = Entry(Frame_1, width=50, borderwidth=5, bg="White", fg="Black")
+    Input_TextBox.insert(0, "Enter Number of letters you want to display")
 
     # Create Buttons
-    button_Choose_File = Button(Frame_1, text="Browse File", state=ACTIVE, padx=15, pady=2, fg="blue",
-                                command=GetInputFile)
-    button_Analysis_File = Button(Frame_1, text="Analyse", state=ACTIVE, padx=15, pady=2, bg="Green",
-                                  command=AnalyseInputFile)
+    button_Choose_File = Button(Frame_1, text="Browse File", state=ACTIVE, padx=22, pady=2, fg="blue",
+                                command=lambda: GetInputFile())
+    button_Analyse_File = Button(Frame_1, text="Analyse", state=DISABLED, padx=15, pady=2,
+                                 command=lambda: AnalyseInputFile())
+
+    button_Save_Edit_File = Button(Frame_1, text="Save Changes", state=DISABLED, padx=15, pady=2, fg="Black",
+                                   command=lambda: Save_Changes_inputFile())
 
 # Shoving Frame 1 into the screen
-    Frame_1.grid(row=0, column=0)    # pack(padx=0, pady=0)
-    input_TextBox.grid(row=0, column=0)
-    button_Choose_File.grid(row=0, column=4)
-    button_Analysis_File.grid(row=1, column=0)
+    Frame_1.grid(row=0, column=0)
+    Input_TextBox.grid(row=0, column=0)
+    button_Choose_File.grid(row=0, column=1)
+    button_Analyse_File.grid(row=2, column=0)
+    button_Save_Edit_File.grid(row=2, column=1)
 
 # Frame 3
     Frame_3 = LabelFrame(root, padx=0, pady=0)
@@ -51,10 +106,9 @@ if __name__ == "__main__":
     # Create a Textbox widget
     Show_TextBox = Text(Frame_3, width=55, borderwidth=2, bg="White", fg="Black")
 
-# Shoving Frame 3 into the screen
-    Frame_3.grid(row=1, column=0)       # .pack(padx=1, pady=1)
-    Show_TextBox.grid(row=0, column=0)      # .pack(pady=0, padx=0)
-
+    # Shoving Frame 3 into the screen
+    Frame_3.grid(row=1, column=0)
+    Show_TextBox.grid(row=0, column=0)
 
 # Frame 2
     Frame_2 = LabelFrame(root, padx=0, pady=0)
@@ -71,11 +125,10 @@ if __name__ == "__main__":
     ]
 
     PlotType = StringVar()
-    # PlotType.set("PMF")
 
     row = column = count = 0
     for text, mode in MODES:
-        Radiobutton(Frame_2, text=text, variable=PlotType, value=mode).grid(row=row, column=column)  # .pack(anchor=W)
+        Radiobutton(Frame_2, text=text, variable=PlotType, value=mode).grid(row=row, column=column)
         if row == 1 & column == 1:
             row = 0
             column = 2
@@ -85,133 +138,35 @@ if __name__ == "__main__":
             row = 1
             column = 1
 
-    # Create Exit buttons
-    button_Execute = Button(Frame_2, text="Execute", state=ACTIVE, padx=5, pady=2, bg="Red", command=Execute(PlotType.get()))
+    # Create buttons
+    button_Execute = Button(Frame_2, text="Execute", state=DISABLED, padx=5, pady=2, command=Execute)
+    button_Save_Analysis_File = Button(Frame_2, text="Save Analysis", state=DISABLED, padx=15, pady=2, fg="Black",
+                                       command=Save_Analysis_File)
 
 # Shoving Frame 2 into the screen
-    Frame_2.grid(row=0, column=1)   # .pack(padx=0, pady=0)
+    Frame_2.grid(row=0, column=1)
+    button_Execute.grid(row=4, column=0)
+    button_Save_Analysis_File.grid(row=4, column=2)
 
-    button_Execute.grid(row=4, column=1)    # .pack(anchor=W)
 
 # Frame 4
     Frame_4 = LabelFrame(root, padx=0, pady=0)
 
     # Create a Textbox widget
-    output_TextBox = Text(Frame_4, width=25, borderwidth=2, bg="White", fg="Black")
+    Analysis_Label = Label(Frame_4, text='', width=29, height=24, borderwidth=2, bg="White", fg="Black",
+                           font=('Helvetica', 10), justify="left", wraplength=240)
 
 # Shoving Frame 4 into the screen
-    Frame_4.grid(row=1, column=1)  # .pack(padx=1, pady=1)
-    output_TextBox.grid(row=0, column=0)  # .pack(pady=0, padx=0)
+    Frame_4.grid(row=1, column=1)
+    Analysis_Label.grid(row=0, column=0)
+    Analysis_Label.pack_propagate(0)
 
-    # Before and after inserting, change the state, otherwise it won't update
-    # output_TextBox.configure(state='normal')
-    # output_TextBox.insert('end', 'Some Text')
 
-    output_TextBox.configure(state='disabled')
+    Show_TextBox.bind("<Key>", Click_Show_TextBox)
 
-    # Generate main loop
+# Generate main loop
     root.mainloop()
 
-"""    # Frame 2
-    Frame_2 = LabelFrame(root, padx=10, pady=10)
-    Frame_2.pack(padx=20, pady=20)
-    button_Exit = Button(Frame_2, text="Exit Program", state=ACTIVE, padx=5, pady=2, bg="Red", command=root.quit)
-
-    # Frame 2
-    Frame_3 = LabelFrame(root, padx=50, pady=50)
-    Frame_3.pack(padx=30, pady=30)
-    button_PMF = Button(Frame_3, text="PMF", state=DISABLED, padx=10, pady=5, fg="Green")
-    button_CDF = Button(Frame_3, text="CDF", state=DISABLED, padx=10, pady=5, fg="#AA336A")  # dark pink
-    button_Mean = Button(Frame_3, text="Mean", state=DISABLED, padx=10, pady=5, fg="orange")
-    button_Variance = Button(Frame_3, text="Variance", state=DISABLED, padx=10, pady=5, fg="#8B8000")  # dark yellow
-    button_Skewness = Button(Frame_3, text="Skewness", state=DISABLED, padx=10, pady=5, fg="purple")
-    button_kurtosis = Button(Frame_3, text="kurtosis", state=DISABLED, padx=10, pady=5, fg="Black")
-
-    # Shoving it into the screen
-    input_TextBox.grid(row=0, column=0)
-    # Output_Label.grid(row=2, column=0)
-
-    C = 20
-    for i in range(1, C):
-        Label(root, text=" ").grid(row=0, column=C)
-
-    button_Choose_File.grid(row=0, column=4)
-    button_Exit.grid(row=0, column=6)
-
-    button_PMF.grid(row=3, column=6)
-    Label(root, text=" ").grid(row=4, column=6)
-
-    button_CDF.grid(row=8, column=6)
-    Label(root, text=" ").grid(row=9, column=6)
-
-    button_Mean.grid(row=13, column=6)
-    Label(root, text=" ").grid(row=14, column=6)
-
-    button_Variance.grid(row=18, column=6)
-    Label(root, text=" ").grid(row=19, column=6)
-
-    button_Skewness.grid(row=23, column=6)
-    Label(root, text=" ").grid(row=24, column=6)
-
-    button_kurtosis.grid(row=28, column=6)
-    Label(root, text=" ").grid(row=29, column=6)
-"""
-
-"""
-    file_Data_Column = \
-        [
-            [
-                GUI.Text("Import File"),
-                GUI.In(size=(25, 1), enable_events=True, key="-FILE-"),
-                GUI.FileBrowse(),
-            ],
-            [
-                GUI.Listbox
-                (
-                    values=[], enable_events=True, size=(40,20),
-                    key="-INPUT FILE-"
-                )
-            ],
-        ]
-
-    # Analytical data shown in the box
-    Buttons_column = \
-        [
-            [
-
-
-            ],
-        ]
-    # ---- full layout ----
-    layout = \
-        [
-            [
-                GUI.Column(file_Data_Column),
-                GUI.VSeperator(),
-                GUI.Column(Buttons_column),
-            ]
-        ]
-
-    # Create the Window
-    Window = GUI.Window("STATISTICAL ANALYSIS OF TEXT FILES", layout)
-
-    # Create an event loop
-    while True:
-        event, value = Window.read()
-        # End program if user closes window or
-        # presses the Exit button
-        if event == "Exit" or event == GUI.WIN_CLOSED:
-            break
-
-        # File was chosen
-        if event == "-FILE-":
-            try:
-                file = value["-FILE-"]
-            except:
-                file = []
-
-    Window.close()
-"""
 
 """
     "1) Open file"
