@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import statistics
 
 Sample_Space = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
                 'a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F',
@@ -29,7 +28,8 @@ def EditFile(FileName, Updated_text):
         return False
 
 def Generate_Analysis_File(CheckBox_state, SortedCharList, TotalNumberOfWords):
-    Generated_text = "#Character | No. of Repetition | Probability of Occurrence\n"
+    Generated_text = "#Character | No. of Repetition | Probability of Occurrence\n" \
+                     "============================================================\n"
     if CheckBox_state == 0:
         for value, key in SortedCharList[2:NoMostRepeated]:
             Generated_text = Generated_text + "    [" + str(key) + "]    |" + "        " + str(value) + "        " + \
@@ -40,15 +40,15 @@ def Generate_Analysis_File(CheckBox_state, SortedCharList, TotalNumberOfWords):
                              "| " + str((value / TotalNumberOfWords)) + "\n"
     return Generated_text
 
-def Save_Output_File(FileName, CheckBox_state, SortedCharList, TotalNumberOfWords, X_fx):
-    Updated_text = str(Functions.Calculate_Mean(X_fx))
+def Save_Output_File(FileName, CheckBox_state, SortedCharList, TotalNumberOfWords, Mean, Variance, Skewness, Kurtosis):
     try:
         FileHandel = open(FileName, 'w')
-        Updated_text = "Mean: " + str(Functions.Calculate_Mean(X_fx)) + " \n"
-        Updated_text = Updated_text + "Variance: " + str(Calculate_Variance(X_fx)) + "\n"
-        Updated_text = Updated_text + "skewness: " + str(Calculate_skewness(X_fx)) + "\n"
-        Updated_text = Updated_text + "kurtosis: " + str(Calculate_kurtosis(X_fx)) + "\n"
-        Updated_text = Updated_text + "============================================================================\n"
+        Updated_text =                "        Mean:           " + Mean + " \n"
+        Updated_text = Updated_text + "      Variance:         " + Variance + "\n"
+        Updated_text = Updated_text + "      Skewness:         " + Skewness + "\n"
+        Updated_text = Updated_text + "      Kurtosis:         " + Kurtosis + "\n"
+        Updated_text = Updated_text + "Total Number Of Words:  " + str(TotalNumberOfWords) + "\n"
+        Updated_text = Updated_text + "============================================================\n"
         Updated_text = Updated_text + Generate_Analysis_File(CheckBox_state, SortedCharList, TotalNumberOfWords)
         FileHandel.write(Updated_text)
         FileHandel.close()
@@ -80,10 +80,13 @@ def Count_Each_Char(FileHandel, CharactersDic):
     CharactersDic["Total Distinct no. of words"] = Total_Distinct_Of_Words
     for word in words:
         for char in word:
-            if CharactersDic[char] == 0:
-                Total_Distinct_Of_Words = Total_Distinct_Of_Words + 1
-            CharactersDic[char] = CharactersDic.get(char, 0) + 1
-            Total_Number_Of_Words = Total_Number_Of_Words + 1
+            try:
+                if CharactersDic[char] == 0:
+                    Total_Distinct_Of_Words = Total_Distinct_Of_Words + 1
+                CharactersDic[char] = CharactersDic.get(char, 0) + 1
+                Total_Number_Of_Words = Total_Number_Of_Words + 1
+            except:
+                continue
     CharactersDic["Total no. of words"] = Total_Number_Of_Words
     CharactersDic["Total Distinct no. of words"] = Total_Distinct_Of_Words
     return CharactersDic
@@ -98,6 +101,19 @@ def SortRepetedChar(CharactersDic):
     return lst
     "print(sorted( [(value,key) for key,value in CharactersDic.items()] , reverse = True) [:NoMostRepeated])"
 
+
+def Output_Data(SortedCharList, NoMostRepeated):
+    text = ""
+    counter = 1
+    for value, key in SortedCharList[0:NoMostRepeated]:
+        if value == 0:
+            continue
+        text = text + " [" + str(key) + "] " + str(value) + "  "
+        if counter == 4:
+            text = text + "\n"
+            counter = 0
+        counter = counter + 1
+    return text
 
 
 def PlotMostRepetedChar(NoMostRepeated, SortedCharList, TotalNumberOfWords):
@@ -168,38 +184,41 @@ def Calculate_Variance(X_fx):
     return Variance
 
 
-def Calculate_skewness(X_fx):
-    "Skew = 3 * (Mean – Median) / Standard Deviation"
+def Calculate_Skewness(X_fx):
+    """
+        Skew = {Σ[(X**3) * f(x)] - [3 * Mean * Var] - (Mean**3)}
+              ---------------------------------------------------
+                        [Standard Deviation**]
+    """
     Var = Calculate_Variance(X_fx)
-    Standerd_Deviation = np.sqrt(Var)
+    Standard_Deviation = np.sqrt(Var)
     Mean = Calculate_Mean(X_fx)
-    Sorted_X = []
+    E_x3 = 0
     for X, Fx in X_fx.items():
-        if Fx == 0:
-            continue
-        Sorted_X.append(int(X))
-    Median = statistics.median(Sorted_X)
+        if Fx != 0:
+            E_x3 = E_x3 + ((int(X)**3) * float(Fx))
 
-    Skew = 3*(Mean-Median)/Standerd_Deviation
+    Skew = (E_x3 - (3 * Mean * Var) - (Mean ** 3)) / (Standard_Deviation ** 3)
     return Skew
 
-def Calculate_kurtosis(X_fx):
-    "Kurtosis  = Σ(xi - x̅)4/(n-1)(SD4)"
-    """x̅ = Mean (average of all data points)
-       xi = Value of each data point
-       n = Sample size
-       SD = Standard Deviation
-"""
-    Mean = Calculate_Mean(X_fx)
-    Sample_size = 0
-    ΣXi_X = 0
-    for X, Fx in X_fx.items():
-        if Fx == 0:
-            continue
-        Sample_size = Sample_size + 1
-        ΣXi_X = ΣXi_X + (X-Mean)**4
+def Calculate_Kurtosis(X_fx):
+    """
+        Kurtosis  = [Σ[(X**4) * f(x)] - (4 * Mean * Σ[(X**3) * f(x)]) + (6 * (Mean**2) * Var) + (3 * (Mean**4))]
+                    ---------------------------------------------------------------------------------------------
+                                        / [Standard Deviation**4]
+    """
     Var = Calculate_Variance(X_fx)
-    Standerd_Deviation = np.sqrt(Var)
+    Standard_Deviation = np.sqrt(Var)
+    Mean = Calculate_Mean(X_fx)
+    E_x3 = 0
+    for X, Fx in X_fx.items():
+        if Fx != 0:
+            E_x3 = E_x3 + ((int(X) ** 3) * float(Fx))
 
-    kurtosis = (ΣXi_X)/((Sample_size - 1)*(Standerd_Deviation**4))
+    E_x4 = 0
+    for X, Fx in X_fx.items():
+        if Fx != 0:
+            E_x4 = E_x4 + ((int(X) ** 4) * float(Fx))
+
+    kurtosis = ((E_x4 - (4 * Mean * E_x3) + (6 * (Mean**2) * Var)) + (3 * (Mean**4))) / (Standard_Deviation**4)
     return kurtosis

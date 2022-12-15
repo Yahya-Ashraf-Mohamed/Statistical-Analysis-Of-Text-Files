@@ -82,14 +82,22 @@ def Save_Changes_inputFile():
 def Save_Analysis_File():
     Save_FileName = filedialog.askopenfilename(initialdir="Home", title="Open Text File",
                                                filetypes=(("Text Files", "*.txt"),))
-    state = Functions.Save_Output_File(Save_FileName, Check_Value.get(), SortedCharList, TotalNoOfWords, X_fx)
+    state = Functions.Save_Output_File(Save_FileName, Check_Value.get(), SortedCharList, TotalNoOfWords, Mean,
+                                       Var, Skewness, Kurtosis)
     if state == True:
         messagebox.showinfo("Save", "Analysis Saved Successfully!")
     else:
         messagebox.showerror("ERROR", "Error in Saving!\n" + Save_FileName)
 
+
 def AnalyseInputFile():
-    "1) Create Dictionary"
+    "1) Create Dictionaries"
+    global MVSK
+    MVSK = dict()
+    MVSK["Mean"] = False
+    MVSK["Variance"] = False
+    MVSK["Skewness"] = False
+    MVSK["Kurtosis"] = False
     global CharactersDic
     global TotalNoOfWords
     TotalNoOfWords = 0
@@ -99,24 +107,33 @@ def AnalyseInputFile():
     global CharacterConverter
     CharacterConverter = Functions.Create_CharacterConverter_Dictionary()
 
-    "3) Count Characters"
+    "2) Count Characters"
     CharactersDic = Functions.Count_Each_Char(Show_TextBox.get(1.0, END), CharactersDic)
     TotalDistinctOfWords = CharactersDic["Total Distinct no. of words"]
     TotalNoOfWords = CharactersDic["Total no. of words"]
     del CharactersDic["Total Distinct no. of words"]
     del CharactersDic["Total no. of words"]
 
-    "2) Create our Sample Space and f(x)"
+    "3) Create our Sample Space and f(x)"
     global X_fx
     X_fx = Functions.Generate_X_fx(CharactersDic, CharacterConverter,TotalNoOfWords)
 
+    "4) Make our Calculations"
+    global Mean
+    global Var
+    global Skewness
+    global Kurtosis
+    Mean = str(Functions.Calculate_Mean(X_fx))
+    Var = str(Functions.Calculate_Variance(X_fx))
+    Skewness = str(Functions.Calculate_Skewness(X_fx))
+    Kurtosis = str(Functions.Calculate_Kurtosis(X_fx))
 
-    "4) User Enter Number of letters most repeated"
+    "5) User Enter Number of letters most repeated"
     if Check_Value.get() == 0:
         global NoMostRepeated
         try:
-            NoMostRepeated = int(Input_TextBox.get())    # Add 1 to ignore the total number of words saved in the dictionary
-            if NoMostRepeated > TotalNoOfWords:
+            NoMostRepeated = int(Input_TextBox.get())
+            if NoMostRepeated > TotalDistinctOfWords:
                 messagebox.showwarning("Warning!",
                                        "The number of characters you want to show exceeds the total number of "
                                        "Characters entered!")
@@ -128,37 +145,17 @@ def AnalyseInputFile():
         except:
             messagebox.showerror("ERROR", "Enter number of letters you want!\n")
             return
-        button_Save_Analysis_File.config(state=ACTIVE)
-        global SortedCharList
-        SortedCharList = Functions.SortRepetedChar(CharactersDic)
-        text = ""
-        counter = 1
-        for value, key in SortedCharList[0:NoMostRepeated]:
-            if value == 0:
-                continue
-            text = text + " [" + str(key) + "] " + str(value) + "  "
-            if counter == 4:
-                text = text + "\n"
-                counter = 0
-            counter = counter + 1
-        Analysis_Label.configure(text=text)
     else:
-        button_Save_Analysis_File.config(state=ACTIVE)
-        SortedCharList = Functions.SortRepetedChar(CharactersDic)
-        text = ""
-        counter = 1
-        for value, key in SortedCharList[0:]:
-            if value == 0:
-                continue
-            text = text + " [" + str(key) + "] " + str(value) + "  "
-            if counter == 4:
-                text = text + "\n"
-                counter = 0
-            counter = counter + 1
-        Analysis_Label.configure(text=text)
-
+        NoMostRepeated = TotalDistinctOfWords
+    button_Save_Analysis_File.config(state=ACTIVE)
+    global SortedCharList
+    SortedCharList = Functions.SortRepetedChar(CharactersDic)
+    global Output_Text
+    Output_Text = Functions.Output_Data(SortedCharList, NoMostRepeated)
+    Analysis_Label.configure(text=Output_Text)
 
 def Execute(PlotType):
+    global Output_Text
     if Analysis_Label.cget("text") == "":
         AnalyseInputFile()
     match PlotType:
@@ -179,16 +176,52 @@ def Execute(PlotType):
             Functions.Generate_CDF(X_fx)
             return
         case "Mean":
-            messagebox.showinfo("Mean", str(Functions.Calculate_Mean(X_fx)))
+            if MVSK["Mean"] == True:
+                messagebox.showinfo("Mean", Mean)
+                return
+            messagebox.showinfo("Mean", Mean)
+            Temp_Text = Output_Text
+            Output_Text = "Mean = " + Mean + "\n"
+            Output_Text = Output_Text + "==============================\n"
+            Output_Text = Output_Text + Temp_Text
+            Analysis_Label.configure(text=Output_Text)
+            MVSK["Mean"] = True
             return
         case "Variance":
-            messagebox.showinfo("Variance", str(Functions.Calculate_Variance(X_fx)))
+            if MVSK["Variance"] == True:
+                messagebox.showinfo("Variance", Var)
+                return
+            messagebox.showinfo("Variance", Var)
+            Temp_Text = Output_Text
+            Output_Text = "Variance = " + Var + "\n"
+            Output_Text = Output_Text + "==============================\n"
+            Output_Text = Output_Text + Temp_Text
+            Analysis_Label.configure(text=Output_Text)
+            MVSK["Variance"] = True
             return
-        case "skewness":
-            messagebox.showinfo("skewness", str(Functions.Calculate_skewness(X_fx)))
+        case "Skewness":
+            if MVSK["Skewness"] == True:
+                messagebox.showinfo("Skewness", Skewness)
+                return
+            messagebox.showinfo("Skewness", Skewness)
+            Temp_Text = Output_Text
+            Output_Text = "Skewness = " + Skewness + "\n"
+            Output_Text = Output_Text + "==============================\n"
+            Output_Text = Output_Text + Temp_Text
+            Analysis_Label.configure(text=Output_Text)
+            MVSK["Skewness"] = True
             return
-        case "kurtosis":
-            messagebox.showinfo("kurtosis", str(Functions.Calculate_kurtosis(X_fx)))
+        case "Kurtosis":
+            if MVSK["Kurtosis"] == True:
+                messagebox.showinfo("Kurtosis", Kurtosis)
+                return
+            messagebox.showinfo("Kurtosis", Kurtosis)
+            Temp_Text = Output_Text
+            Output_Text = "Kurtosis = " + Kurtosis + "\n"
+            Output_Text = Output_Text + "==============================\n"
+            Output_Text = Output_Text + Temp_Text
+            Analysis_Label.configure(text=Output_Text)
+            MVSK["Kurtosis"] = True
             return
         case default:
             return
@@ -251,8 +284,8 @@ if __name__ == "__main__":
         ("Mean", "Mean"),
         ("Analysis", "Analysis"),
         ("Variance", "Variance"),
-        ("skewness", "skewness"),
-        ("kurtosis", "kurtosis"),
+        ("Skewness", "Skewness"),
+        ("Kurtosis", "Kurtosis"),
     ]
 
     PlotType = StringVar()
@@ -271,7 +304,7 @@ if __name__ == "__main__":
             column = 1
 
     # Create buttons
-    button_Execute = Button(Frame_2, text="Execute graph", state=DISABLED, padx=5, pady=2, command=lambda: Execute(PlotType.get()))
+    button_Execute = Button(Frame_2, text="Execute", state=DISABLED, padx=5, pady=2, command=lambda: Execute(PlotType.get()))
     button_Save_Analysis_File = Button(Frame_2, text="Save Analysis", state=DISABLED, padx=15, pady=2, fg="Black",
                                        command=lambda: Save_Analysis_File())
 
