@@ -6,13 +6,31 @@ from PIL import ImageTk, Image
 
 
 "Sample for text = aab5 "
+"""
+
+||=====================================================================||
+||  X  | 0 | 1 | 2 | ... |  5  | ... |  a  | A |  b  | B | c | C | ... ||
+||-----|---|---|---|-----| --- |-----| --- |---| --- |---|---|---|-----||
+||  Fx | 0 | 0 | 0 |  0  | 1/4 |  0  | 2/4 | 0 | 1/4 | 0 | 0 | 0 |  0  ||
+||=====================================================================||
+
+X_fx = {0: 0.0, 1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.25, 6: 0.0, 7: 0.0, 8: 0.0, 9: 0.0, 10: 0.5,
+        11: 0.0, 12: 0.25, 13: 0.0, 14: 0.0, 15: 0.0, 16: 0.0, 17: 0.0, 18: 0.0, 19: 0.0, 20: 0.0,
+        21: 0.0, 22: 0.0, 23: 0.0, 24: 0.0, 25: 0.0, 26: 0.0, 27: 0.0, 28: 0.0, 29: 0.0, 30: 0.0,
+        31: 0.0, 32: 0.0, 33: 0.0, 34: 0.0, 35: 0.0, 36: 0.0, 37: 0.0, 38: 0.0, 39: 0.0, 40: 0.0,
+        41: 0.0, 42: 0.0, 43: 0.0, 44: 0.0, 45: 0.0, 46: 0.0, 47: 0.0, 48: 0.0, 49: 0.0, 50: 0.0,
+        51: 0.0, 52: 0.0, 53: 0.0, 54: 0.0, 55: 0.0, 56: 0.0, 57: 0.0, 58: 0.0, 59: 0.0, 60: 0.0,
+        61: 0.0}
+
+"""
 "CharactersDic ={'0': 0, '1': 0, '2': 0, '3': 0, '4': 0, '5': 1, '6': 0, '7': 0, '8': 0, '9': 0," \
                  "'a': 2, 'b': 1, 'c': 0, 'd': 0, 'e': 0, 'f': 0, 'g': 0," \
                  " 'h': 0, 'i': 0, 'j': 0, 'k': 0, 'l': 0, 'm': 0, 'n': 0, 'o': 0," \
                  " 'p': 0, 'q': 0, 'r': 0, 's': 0, 't': 0, 'u': 0, 'v': 0, 'w': 0, 'x': 0, 'y': 0, 'z': 0," \
                  " 'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0, 'G': 0, 'H': 0, 'I': 0," \
                  " 'J': 0, 'K': 0, 'L': 0, 'M': 0, 'N': 0, 'O': 0, 'P': 0, 'Q': 0, 'R': 0, 'S': 0," \
-                 " 'T': 0, 'U': 0, 'V': 0, 'W': 0, 'X': 0, 'Y': 0, 'Z': 0, 'Total no. of words': 4}"
+                 " 'T': 0, 'U': 0, 'V': 0, 'W': 0, 'X': 0, 'Y': 0, 'Z': 0, 'Total no. of words': 4," \
+                 "'Total Distinct no. of words': 4}"
 
 "CharacterConverter = {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9," \
                        "'a': 10, 'b': 11, 'c': 12, 'd': 13, 'e': 14, 'f': 15, 'g': 16, 'h': 17, 'i': 18, 'j': 19," \
@@ -21,6 +39,14 @@ from PIL import ImageTk, Image
                        "'E': 40, 'F': 41, 'G': 42, 'H': 43, 'I': 44, 'J': 45, 'K': 46, 'L': 47, 'M': 48, 'N': 49," \
                        "'O': 50, 'P': 51, 'Q': 52, 'R': 53, 'S': 54, 'T': 55, 'U': 56, 'V': 57, 'W': 58, 'X': 59," \
                        "'Y': 60, 'Z': 61}"
+"SortedCharList = [(4, 'Total no. of words'), (3, 'Total Distinct no. of words'), (2, 'a'), (1, 'b'), (1, '5')," \
+                  "(0, 'z'), (0, 'y'), (0, 'x'), (0, 'w'), (0, 'v'), (0, 'u'), (0, 't'), (0, 's'), (0, 'r'), (0, 'q'),"\
+                  "(0, 'p'), (0, 'o'), (0, 'n'), (0, 'm'), (0, 'l'), (0, 'k'), (0, 'j'), (0, 'i'), (0, 'h'), (0, 'g'),"\
+                  "(0, 'f'), (0, 'e'), (0, 'd'), (0, 'c'), (0, 'Z'), (0, 'Y'), (0, 'X'), (0, 'W'), (0, 'V'), (0, 'U'),"\
+                  "(0, 'T'), (0, 'S'), (0, 'R'), (0, 'Q'), (0, 'P'), (0, 'O'), (0, 'N'), (0, 'M'), (0, 'L'), (0, 'K'),"\
+                  "(0, 'J'), (0, 'I'), (0, 'H'), (0, 'G'), (0, 'F'), (0, 'E'), (0, 'D'), (0, 'C'), (0, 'B'), (0, 'A'),"\
+                  "(0, '9'), (0, '8'), (0, '7'), (0, '6'), (0, '4'), (0, '3'), (0, '2'), (0, '1'), (0, '0')]"
+
 
 def Click_Show_TextBox(key):
      # Open analysis button
@@ -54,30 +80,51 @@ def Save_Changes_inputFile():
 
 
 def Save_Analysis_File():
-    Analysis_text = Functions.Generate_Analysis_File(Check_Value.get(), SortedCharList, CharactersDic)
     Save_FileName = filedialog.askopenfilename(initialdir="Home", title="Open Text File",
-                                          filetypes=(("Text Files", "*.txt"),))
-    state = Functions.Save_Output_File(Save_FileName, Analysis_text)
+                                               filetypes=(("Text Files", "*.txt"),))
+    state = Functions.Save_Output_File(Save_FileName, Check_Value.get(), SortedCharList, TotalNoOfWords, X_fx)
     if state == True:
         messagebox.showinfo("Save", "Analysis Saved Successfully!")
     else:
-        messagebox.showerror("ERROR", "Error in Saving!\n" + FileName)
+        messagebox.showerror("ERROR", "Error in Saving!\n" + Save_FileName)
 
 def AnalyseInputFile():
     "1) Create Dictionary"
     global CharactersDic
+    global TotalNoOfWords
+    TotalNoOfWords = 0
+    global TotalDistinctOfWords
+    TotalDistinctOfWords = 0
     CharactersDic = Functions.CreateDictionary()
     global CharacterConverter
     CharacterConverter = Functions.Create_CharacterConverter_Dictionary()
 
-    "2) Count Characters"
+    "3) Count Characters"
     CharactersDic = Functions.Count_Each_Char(Show_TextBox.get(1.0, END), CharactersDic)
+    TotalDistinctOfWords = CharactersDic["Total Distinct no. of words"]
+    TotalNoOfWords = CharactersDic["Total no. of words"]
+    del CharactersDic["Total Distinct no. of words"]
+    del CharactersDic["Total no. of words"]
 
-    "3) User Enter Number of letters most repeted"
+    "2) Create our Sample Space and f(x)"
+    global X_fx
+    X_fx = Functions.Generate_X_fx(CharactersDic, CharacterConverter,TotalNoOfWords)
+
+
+    "4) User Enter Number of letters most repeated"
     if Check_Value.get() == 0:
-        global NoMostReperted
+        global NoMostRepeated
         try:
-            NoMostReperted = int(Input_TextBox.get())+1     # Add 1 to ignore the total number of words saved in the dictionary
+            NoMostRepeated = int(Input_TextBox.get())    # Add 1 to ignore the total number of words saved in the dictionary
+            if NoMostRepeated > TotalNoOfWords:
+                messagebox.showwarning("Warning!",
+                                       "The number of characters you want to show exceeds the total number of "
+                                       "Characters entered!")
+                NoMostRepeated = TotalDistinctOfWords
+
+                Input_TextBox.delete(0, END)
+                Input_TextBox.insert(END, str(NoMostRepeated))
+
         except:
             messagebox.showerror("ERROR", "Enter number of letters you want!\n")
             return
@@ -86,7 +133,7 @@ def AnalyseInputFile():
         SortedCharList = Functions.SortRepetedChar(CharactersDic)
         text = ""
         counter = 1
-        for value, key in SortedCharList[1:NoMostReperted]:
+        for value, key in SortedCharList[0:NoMostRepeated]:
             if value == 0:
                 continue
             text = text + " [" + str(key) + "] " + str(value) + "  "
@@ -100,7 +147,7 @@ def AnalyseInputFile():
         SortedCharList = Functions.SortRepetedChar(CharactersDic)
         text = ""
         counter = 1
-        for value, key in SortedCharList[1:]:
+        for value, key in SortedCharList[0:]:
             if value == 0:
                 continue
             text = text + " [" + str(key) + "] " + str(value) + "  "
@@ -110,38 +157,38 @@ def AnalyseInputFile():
             counter = counter + 1
         Analysis_Label.configure(text=text)
 
-    "Create our Sample Space and f(x)"
-    global X_fx
-    X_fx = Functions.Generate_X_fx(CharactersDic, CharacterConverter)
 
 def Execute(PlotType):
     if Analysis_Label.cget("text") == "":
         AnalyseInputFile()
     match PlotType:
         case "Analysis":
-            "Plot most repeated letters"
+            "Plot analysis for most repeated Characters"
             if Check_Value.get() == 0:
-                Functions.PlotMostRepetedChar(NoMostReperted, SortedCharList, CharactersDic["Total no. of words"])
+                Functions.PlotMostRepetedChar(NoMostRepeated, SortedCharList, TotalDistinctOfWords)
             else:
-                Functions.PlotAllChar(SortedCharList, CharactersDic["Total no. of words"])
+                "Plot analysis for All Characters"
+                Functions.PlotAllChar(SortedCharList, TotalDistinctOfWords)
             return
         case "PMF":
-            AnalyseInputFile()
+            "Plot PMF for Characters"
+            Functions.Generate_PMF(X_fx)
             return
         case "CDF":
-            AnalyseInputFile()
+            "Plot CDF for Characters"
+            Functions.Generate_CDF(X_fx)
             return
         case "Mean":
-            messagebox.showinfo("Mean", Functions.Calculate_Mean(X_fx))
+            messagebox.showinfo("Mean", str(Functions.Calculate_Mean(X_fx)))
             return
         case "Variance":
-            AnalyseInputFile()
+            messagebox.showinfo("Variance", str(Functions.Calculate_Variance(X_fx)))
             return
-        case "Analysis":
-            AnalyseInputFile()
+        case "skewness":
+            messagebox.showinfo("skewness", str(Functions.Calculate_skewness(X_fx)))
             return
         case "kurtosis":
-            AnalyseInputFile()
+            messagebox.showinfo("kurtosis", str(Functions.Calculate_kurtosis(X_fx)))
             return
         case default:
             return
@@ -251,34 +298,3 @@ if __name__ == "__main__":
 
 # Generate main loop
     root.mainloop()
-
-
-"""
-    "1) Open file"
-    FileName = input("Enter Your File Name: ")
-    FileName = "ST.txt"
-    Text = Functions.OpenFile(FileName)
-
-    "2) Create Dictionary"
-    CharactersDic = Functions.CreateDictionary()
-    CharacterConverter = Functions.Create_CharacterConverter_Dictionary()
-
-    "3) Count Characters"
-    print("Counting...")
-    Functions.Count(Text, CharactersDic)
-
-    "4) User Enter Number of letters most repeted"
-    NoMostReperted = int( input("Enter the number of most repeted letters you want: "))
-    SortedCharList = Functions.SortRepetedChar(CharactersDic)
-    Functions.PrintMostRepetedChar(NoMostReperted, SortedCharList)
-
-    "5) Plot most repeted letters"
-    Functions.PlotMostRepetedChar(NoMostReperted, SortedCharList)
-    Functions.PlotAllChar(SortedCharList)
-
-    "6) Change letters to equivalent number for calculations and create array"
-    data = Functions.ConvertCharToNum(SortedCharList, CharacterConverter)
-    "print(data)" '''For debugging purpose'''
-    
-     + " P= " + str((value/CharactersDic["Total no. of words"])
-"""
