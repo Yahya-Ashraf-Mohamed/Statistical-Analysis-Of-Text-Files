@@ -1,6 +1,8 @@
 # Statistical-Analysis-Of-Text-Files
-This is GUI-based tool that allows a user to add any text file or type his own text and results in some statistics related to the text written in the file.
-The project was built using python and tkinter library was used for creating GUI.
+This is GUI-based tool that allows a user to add any text file or type his own text and the results are shown in some statistics related to the text written in the file.
+The project was built using python.
+Tkinter library was used for creating GUI.
+Numpy & Matplotlib for the statistical analysis.
 
 GUI Description
 =================
