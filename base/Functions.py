@@ -31,11 +31,11 @@ def Generate_Analysis_File(CheckBox_state, SortedCharList, TotalNumberOfWords):
     Generated_text = "#Character | No. of Repetition | Probability of Occurrence\n" \
                      "============================================================\n"
     if CheckBox_state == 0:
-        for value, key in SortedCharList[2:NoMostRepeated]:
+        for value, key in SortedCharList[0:NoMostRepeated]:
             Generated_text = Generated_text + "    [" + str(key) + "]    |" + "        " + str(value) + "        " + \
                              "| " + str((value/TotalNumberOfWords)) + "\n"
     else:
-        for value, key in SortedCharList[2:]:
+        for value, key in SortedCharList[0:]:
             Generated_text = Generated_text + "    [" + str(key) + "]    |" + "        " + str(value) + "        " + \
                              "| " + str((value / TotalNumberOfWords)) + "\n"
     return Generated_text
@@ -188,7 +188,7 @@ def Calculate_Skewness(X_fx):
     """
         Skew = {Σ[(X**3) * f(x)] - [3 * Mean * Var] - (Mean**3)}
               ---------------------------------------------------
-                        [Standard Deviation**]
+                        [Standard Deviation**3]
     """
     Var = Calculate_Variance(X_fx)
     Standard_Deviation = np.sqrt(Var)
